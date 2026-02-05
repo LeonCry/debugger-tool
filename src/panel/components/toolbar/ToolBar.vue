@@ -43,7 +43,7 @@ const throttlingMode = ref(false);
           </QuasiButton>
         </div>
         <template #reference>
-          <QuasiSwitch key="throttlingMode" v-model:value="throttlingMode" text="THROTTLING MODE" />
+          <QuasiSwitch key="throttlingMode" v-model:value="throttlingMode" text="THROTTLING" />
         </template>
       </ElPopover>
     </div>

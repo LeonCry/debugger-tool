@@ -15,6 +15,7 @@ import {
   IconLanguage,
   IconSettingsFilled,
   IconStarFilled,
+  IconTableColumn,
 } from '@tabler/icons-vue';
 
 const eyeShow = ref(false);
@@ -110,16 +111,15 @@ const eyeShow = ref(false);
       </div>
       <div class="w-full bg-[#f2f0ff] px-2 py-1 rounded-md flex items-center justify-between my-4">
         <p class="flex items-center gap-2">
-          <IconAlarmSmoke :size="20" />
-          <span>clear cache</span>
+          <IconTableColumn :size="20" />
+          <span>show mode</span>
         </p>
         <span class="flex-1" />
-        <ElButton
-          type="danger"
-          size="small"
-          class="flex-1"
-        >
-          CLEAR
+        <ElButton size="small" color="#FB61AF" class="text-white!">
+          TABLE
+        </ElButton>
+        <ElButton size="small" color="#FFFFFF">
+          LIST
         </ElButton>
       </div>
       <div class="w-full bg-[#f2f0ff] px-2 py-1 rounded-md flex items-center justify-between my-4">
@@ -140,6 +140,20 @@ const eyeShow = ref(false);
             <IconEyeOff :size="20" />
           </template>
         </ElSwitch>
+      </div>
+      <div class="w-full bg-[#f2f0ff] px-2 py-1 rounded-md flex items-center justify-between my-4">
+        <p class="flex items-center gap-2">
+          <IconAlarmSmoke :size="20" />
+          <span>clear cache</span>
+        </p>
+        <span class="flex-1" />
+        <ElButton
+          type="danger"
+          size="small"
+          class="flex-1"
+        >
+          CLEAR
+        </ElButton>
       </div>
     </section>
     <section class="w-full rounded-md bg-primary p-3 text-sm leading-8">
