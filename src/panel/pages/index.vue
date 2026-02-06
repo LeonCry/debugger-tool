@@ -1,21 +1,73 @@
 <script setup lang="ts">
 import { IconArrowBigUpFilled, IconSettingsFilled, IconSunHighFilled } from '@tabler/icons-vue';
-
+// 默认详情高度
+const DEFAULT_DETAIL_HEIGHT = 400;
+// gap高度
+const GAP_HEIGHT = 8;
 function toggleTheme() {
   document.documentElement.classList.add('blend-dark');
 }
+// 是否展示工具栏
+const showBar = ref(true);
+function handleShowBar() {
+  showBar.value = !showBar.value;
+}
+// 查看详情
+const detailRow = ref<Record<string, any> | null>(null);
+function checkDetail(row: Record<string, any>) {
+  detailRow.value = row;
+}
+const toolBarRef = useTemplateRef('toolBarRef');
+const mainRef = useTemplateRef('mainRef');
+const headerRef = useTemplateRef('headerRef');
+const { height: mainH } = useElementBounding(mainRef);
+const { height: headerH } = useElementBounding(headerRef);
+const { height: toolBarH } = useElementBounding(toolBarRef);
+// detail高度
+const detailH = ref(DEFAULT_DETAIL_HEIGHT);
+// 可分配高度
+const assignH = computed(() => mainH.value - headerH.value);
+// content高度
+const contentH = computed(() => {
+  const bh = showBar.value ? toolBarH.value : 0;
+  const dh = detailRow.value ? detailH.value : 0;
+  let gapCount = 3;
+  gapCount += Number(bh / bh) || 0;
+  gapCount += Number(dh / dh) || 0;
+  return assignH.value - bh - dh - GAP_HEIGHT * gapCount;
+});
+const transformY = computed(() => {
+  let detailTrans = 0;
+  if (!showBar.value) detailTrans -= toolBarH.value;
+  if (!detailRow.value) detailTrans += detailH.value;
+  return {
+    barTrans: `translateY(-${!showBar.value ? toolBarH.value + headerH.value : 0}px)`,
+    contTrans: `translateY(-${!showBar.value ? toolBarH.value : 0}px)`,
+    detailTrans: `translateY(${detailTrans}px)`,
+  };
+});
 </script>
 
 <template>
-  <main class="w-full h-full bg-background text-foreground p-4 flex flex-col text-sm gap-2 overflow-hidden">
-    <header class="flex items-center gap-2">
+  <main
+    ref="mainRef"
+    class="w-full h-full bg-background text-foreground px-4 pb-4 text-sm overflow-hidden"
+  >
+    <header
+      ref="headerRef"
+      class="flex items-center gap-2 bg-background py-4 z-10 border-b border-gray-300 relative"
+    >
       <img src="/logo.png" alt="logo" class="w-8">
       <p class="font-bold text-lg">
         NETWORK DEBUGGER TOOL
       </p>
       <span class="flex-1" />
-      <RoundButton>
-        <IconArrowBigUpFilled :size="20" />
+      <RoundButton @click="handleShowBar">
+        <IconArrowBigUpFilled
+          :size="20"
+          class="transition-all duration-300"
+          :class="!showBar ? 'rotate-180 text-text_primary_red' : ''"
+        />
       </RoundButton>
       <RoundButton @click="toggleTheme">
         <IconSunHighFilled :size="20" />
@@ -24,8 +76,24 @@ function toggleTheme() {
         <IconSettingsFilled :size="20" />
       </RoundButton>
     </header>
-    <div class="w-full h-2 border-b border-gray-300" />
-    <ToolBar />
-    <Content class="flex-1" />
+    <ToolBar
+      ref="toolBarRef"
+      class="transition-all duration-500 mt-2"
+      :class="!showBar ? '' : 'delay-300'"
+      :style="{ transform: transformY.barTrans }"
+    />
+    <Content
+      :height="contentH"
+      :check-detail="checkDetail"
+      class="transition-all duration-500 delay-200 mt-2"
+      :style="{ transform: transformY.contTrans }"
+    />
+    <Detail
+      v-model:row="detailRow"
+      :height="detailH"
+      class="transition-all duration-500 mt-2"
+      :class="!detailRow ? '' : 'delay-200'"
+      :style="{ transform: transformY.detailTrans }"
+    />
   </main>
 </template>

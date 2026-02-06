@@ -16,10 +16,12 @@
   --text_primary_red: #e63584;
   --btn_bg: #e8e8e8;
   --container_bg: #e8e8e8;
+  --table_hover_bg: #eeeeee;
   --btn_hover: black;
   --btn_activated: #e63584;
   --btn_shadow_l: #ffffff;
   --btn_shadow_r: #c5c5c5;
+  --gray_300: #d1d5dc;
 }
 .dark {
   --background: #09090b;
